@@ -1,0 +1,58 @@
+body {
+   background-color: #FFE4E1;
+   font-family: Verdana, Geneva, sans-serif;
+}
+
+h1 {
+   color: #CD5C5C;
+}
+
+#footer {
+   background-color: #b29f9d;
+	margin-top: 50px;
+	height: 70px;
+   padding: 10px;
+}
+
+#slogan {
+	font-size: 0.9em;
+	color: #FF8C00;
+}
+
+#sloganemph {
+	font-size: 1.2em;
+	color: FF8C00;
+	font-weight: bold;
+}
+
+#monkey {
+	height: 70px;
+}
+
+#links a {
+	text-decoration: none;
+	color: #000;
+
+}
+
+#logout input[type="submit"] {
+     background:none!important;
+     border:none; 
+     padding:0!important;
+     cursor:pointer;
+	font-size: 1.1em;
+    text-decoration: none;
+    color: #000;   
+}
+
+#brand {
+	float: right;
+}
+
+#loginright {
+	margin-left: 300px;
+}
+
+#loginleft {
+   float: left;
+}

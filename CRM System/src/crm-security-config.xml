@@ -1,0 +1,43 @@
+
+<beans:beans xmlns="http://www.springframework.org/schema/security" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:oauth2="http://www.springframework.org/schema/security/oauth2"
+	 
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/security 
+        http://www.springframework.org/schema/security/spring-security.xsd
+        http://www.springframework.org/schema/security/oauth2 
+        http://www.springframework.org/schema/security/spring-security-oauth2.xsd">
+      
+ 	
+ 	<!--  This is a basic security set up, currently for the web-tier only -->
+ 	
+	<!--  For this course, we will use in memory authentication - see module 1 of Spring Security Course for details on JDBC providers -->
+	<authentication-manager>
+		<authentication-provider>
+			<user-service>			
+				<user name="rac" password="secret" authorities="ROLE_CRM_USER"/>
+			</user-service>
+		</authentication-provider>
+	</authentication-manager>
+	
+	<!--  this is the vanilla website settings...-->
+	<http pattern="/**">	
+		<intercept-url pattern="/oauth/**" access="hasRole('ROLE_CRM_USER')"/>
+		<intercept-url pattern="/login.jsp" access="permitAll()"/>
+		<intercept-url pattern="/css/**" access="permitAll()"/>		
+		<intercept-url pattern="/login" access="permitAll()"/>
+		<intercept-url pattern="/**" access="hasRole('ROLE_CRM_USER')"/>
+		<form-login login-page="/login.jsp"
+					authentication-failure-url="/login.jsp?error=1"
+					login-processing-url="/login"/>
+					
+		<logout logout-success-url="/website/all-customers.html"/>
+							
+		<csrf/> 		
+	</http>
+	
+</beans:beans>	

@@ -1,0 +1,40 @@
+
+<beans:beans xmlns="http://www.springframework.org/schema/security" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans" 
+	xmlns:oauth2="http://www.springframework.org/schema/security/oauth2"
+	  
+	 
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/security 
+        http://www.springframework.org/schema/security/spring-security.xsd
+        http://www.springframework.org/schema/security/oauth2 
+        http://www.springframework.org/schema/security/spring-security-oauth2.xsd">
+    
+	<authentication-manager>
+		<authentication-provider>
+			<user-service>			
+				<user name="mm" password="mm" authorities="ROLE_MAIL_USER"/>
+			</user-service>
+		</authentication-provider>
+	</authentication-manager>
+	
+	<http pattern="/**">	
+		<intercept-url pattern="/login.jsp" access="permitAll()"/>
+		<intercept-url pattern="/css/**" access="permitAll()"/>		
+		<intercept-url pattern="/images/**" access="permitAll()"/>		
+		
+		<intercept-url pattern="/login" access="permitAll()"/>
+		<intercept-url pattern="/**" access="hasRole('ROLE_MAIL_USER')"/>
+		
+		<form-login login-page="/login.jsp"
+					authentication-failure-url="/login.jsp?error=1"
+					login-processing-url="/login"/>
+		
+		<logout logout-success-url="/build-newsletter.html"/>
+				
+		<csrf/>
+	</http>
+</beans:beans>	
