@@ -24,6 +24,12 @@
 		</authentication-provider>
 	</authentication-manager>
 	
+	<!-- <http pattern="/rest/**"> -->
+	<http pattern="/rest/**" create-session="stateless">
+		<intercept-url pattern="/rest/**" access="hasRole('ROLE_CRM_USER')"/>
+		<http-basic />
+	</http>
+	
 	<!--  this is the vanilla website settings...-->
 	<http pattern="/**">	
 		<intercept-url pattern="/oauth/**" access="hasRole('ROLE_CRM_USER')"/>

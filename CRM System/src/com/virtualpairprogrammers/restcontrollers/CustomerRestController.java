@@ -4,6 +4,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.net.URI;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -72,6 +73,10 @@ public class CustomerRestController
 		}
 	}
 	
+	
+	@Autowired
+	private HttpServletRequest httpRequest;
+	
 	/**
 	 * Requirement: ONLY return customers.
 	 * @return
@@ -80,7 +85,15 @@ public class CustomerRestController
 	@RequestMapping(value="/rest/customers", method=RequestMethod.GET)
 	public CustomerCollectionRepresentation returnAllCustomers(@RequestParam(required=false) Integer first, 
 			 												   @RequestParam(required=false) Integer last) throws CustomerNotFoundException
-	{		
+	{	
+		
+		Enumeration<String> headerNames = httpRequest.getHeaderNames();
+		while(headerNames.hasMoreElements()) {
+			String headerName = headerNames.nextElement();
+			String headerValue = httpRequest.getHeader(headerName);
+			System.out.println(headerName + ":::" + headerValue);
+		}
+		
 		List<Customer> allCustomers = customerService.getAllCustomers();
 		for (Customer next: allCustomers)
 		{

@@ -3,3 +3,5 @@
 tomcat
 Servers
 .sonarlint
+.recommenders*
+/**/bin/*/

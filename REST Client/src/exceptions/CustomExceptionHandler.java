@@ -45,7 +45,7 @@ public class CustomExceptionHandler extends DefaultResponseErrorHandler
 			throw new EditingConflictException();
 		}
 		
-		throw new UnknownHttpErrorException();
+		throw new UnknownHttpErrorException(response.getStatusCode().toString() + response.getStatusCode().getReasonPhrase());
 	}
 
 }
