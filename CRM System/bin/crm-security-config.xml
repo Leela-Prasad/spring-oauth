@@ -11,8 +11,42 @@
         http://www.springframework.org/schema/security/spring-security.xsd
         http://www.springframework.org/schema/security/oauth2 
         http://www.springframework.org/schema/security/spring-security-oauth2.xsd">
-      
+    
+    <!-- This block is to setup authorizaiton and token endpoints 
+         i.e., /oauth/authorize  and  /oauth/token -->
+    <oauth2:authorization-server client-details-service-ref="clientDetailsService">
+    	<!-- This is to tell that we are doing Oauth full Authentication Grant type -->
+    	<oauth2:authorization-code/>
+    </oauth2:authorization-server>  
  	
+ 	<!-- This block is responsible for storing list of registered clients
+ 	     who want to do oauth authentication full Grant type for veryfing 
+ 	     client what they are saying. This block is an inmemory store for 
+ 	     development puropses, we can use a jdbc store where all the registered
+ 	     clients are stored, for this we have to use JdbcClientDetailsService-->
+ 	     
+ 	     <!-- This is something similar to the authentication-manager where 
+ 	     users who are doing are authenticated -->
+ 	<oauth2:client-details-service id="clientDetailsService">
+ 		<oauth2:client client-id="mailmonkey"
+ 						secret="somesecretkey"
+ 						authorities="ROLE_CLIENT"
+ 						scope="read"
+ 						authorized-grant-types="authorization_code"/>
+ 	</oauth2:client-details-service>
+ 	
+ 	
+  <!--  <bean class="org.springframework.security.oauth2.provider.client.JdbcClientDetailsService" id="myClientDetails">
+      <constructor-arg index="0">
+         This is your jdbc datasource, i.e. db details
+         <ref bean="dataSource" />
+      </constructor-arg>
+   </bean>
+   
+	   <bean id="clientDetailsUserService"
+	class="org.springframework.security.oauth2.provider.client.ClientDetailsUserDetailsService">
+	        <constructor-arg ref="myClientDetails" />
+	    </bean> -->
  	<!--  This is a basic security set up, currently for the web-tier only -->
  	
 	<!--  For this course, we will use in memory authentication - see module 1 of Spring Security Course for details on JDBC providers -->
@@ -31,7 +65,9 @@
 	</http>
 	
 	<!--  this is the vanilla website settings...-->
-	<http pattern="/**">	
+	<http pattern="/**">
+		<!-- *** Here we have secure /oauth/authorize so that it will produce
+		     a login to the resource owner -->	
 		<intercept-url pattern="/oauth/**" access="hasRole('ROLE_CRM_USER')"/>
 		<intercept-url pattern="/login.jsp" access="permitAll()"/>
 		<intercept-url pattern="/css/**" access="permitAll()"/>		
