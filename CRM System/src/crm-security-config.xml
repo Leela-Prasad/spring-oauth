@@ -13,7 +13,9 @@
         http://www.springframework.org/schema/security/spring-security-oauth2.xsd">
     
     <!-- This block is to setup authorizaiton and token endpoints 
-         i.e., /oauth/authorize  and  /oauth/token -->
+         i.e., /oauth/authorize  and  /oauth/token 
+         we can even override these defaults by defining spring controller
+         in that case we don't need this block-->
     <oauth2:authorization-server client-details-service-ref="clientDetailsService">
     	<!-- This is to tell that we are doing Oauth full Authentication Grant type -->
     	<oauth2:authorization-code/>
@@ -49,6 +51,11 @@
 	    </bean> -->
  	<!--  This is a basic security set up, currently for the web-tier only -->
  	
+ 	<beans:bean id="clientDetailsUserService" class="org.springframework.security.oauth2.provider.client.ClientDetailsUserDetailsService">
+ 		<beans:constructor-arg ref="clientDetailsService" />
+ 	</beans:bean>
+ 	
+ 	
 	<!--  For this course, we will use in memory authentication - see module 1 of Spring Security Course for details on JDBC providers -->
 	<authentication-manager>
 		<authentication-provider>
@@ -58,10 +65,27 @@
 		</authentication-provider>
 	</authentication-manager>
 	
+	<authentication-manager id="oauthTokenEndpointAuthManager" >
+		<authentication-provider user-service-ref="clientDetailsUserService">
+		</authentication-provider>
+	</authentication-manager>
+	
+	
 	<!-- <http pattern="/rest/**"> -->
 	<http pattern="/rest/**" create-session="stateless">
 		<intercept-url pattern="/rest/**" access="hasRole('ROLE_CRM_USER')"/>
 		<http-basic />
+	</http>
+	
+	<!-- This is to intercept oauth token endpoint -->
+	<http pattern="/oauth/token" create-session="stateless" authentication-manager-ref="oauthTokenEndpointAuthManager">
+		<intercept-url pattern="/oauth/token" access="hasRole('ROLE_CLIENT')" />
+		<http-basic/>
+		
+		<!-- oauth is not working if we don't disable csrf, which is ok
+		     as rest endpoints doesn't need csrf because csrf is required if we want session
+		     but rest is stateless, where we will send credentials for every request-->
+		<csrf disabled="true"/>
 	</http>
 	
 	<!--  this is the vanilla website settings...-->
