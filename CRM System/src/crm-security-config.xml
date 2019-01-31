@@ -70,11 +70,34 @@
 		</authentication-provider>
 	</authentication-manager>
 	
+	<!-- This bean is used to disable default http basic and enable token authentication -->
+	<beans:bean id="oauthTokenEntry" class="org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEntryPoint"/>
 	
-	<!-- <http pattern="/rest/**"> -->
-	<http pattern="/rest/**" create-session="stateless">
-		<intercept-url pattern="/rest/**" access="hasRole('ROLE_CRM_USER')"/>
-		<http-basic />
+	<!-- By default oauth filter is not added in the default filter chain so we need to add this manually
+	 this oauth2:resource-server filter will autheticate tokens with the existing tokens in the memory. -->
+	<oauth2:resource-server id="oauthFilter"/>
+	
+	<!--  This bean is used to enable Spring Expression Language i.e., #oauth2-->
+	<beans:bean id="expressionHandler" class="org.springframework.security.oauth2.provider.expression.OAuth2WebSecurityExpressionHandler" />
+	
+	<!-- This oauthToken  -->
+	<http pattern="/rest/customers" create-session="stateless" entry-point-ref="oauthTokenEntry">
+		<!--  Here the access must be one who have oauth access token so the we have 
+			validate based on the scope, here we have used spring expression language
+			#oauth2, inorder to enable this SEL we have wire another bean called expression handler-->
+		<intercept-url pattern="/rest/customers" access="#oauth2.hasScope('read')"/>
+		
+		<!-- By default oauth filter is not added in the default filter chain so we need to add this manually
+		     by referencing resource-server where existing tokens are avialable and this filter must be added
+		     in a specific position in the filter chain i.e., before PRE_AUTH_FILTER-->
+		<custom-filter ref="oauthFilter" before="PRE_AUTH_FILTER"/>
+		
+		<expression-handler ref="expressionHandler"/>
+		
+		<!-- Here we need to enable token authentication using oauth so we have to disable http basic entry point and plug 
+		    in token authentication entry point, unfortunately we dont have any tag to plug in but we can write a bean 
+		    to this-->
+		<!-- <http-basic /> -->
 	</http>
 	
 	<!-- This is to intercept oauth token endpoint -->
