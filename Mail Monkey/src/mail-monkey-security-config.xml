@@ -34,17 +34,26 @@
 					login-processing-url="/login"/>
 		
 		<logout logout-success-url="/build-newsletter.html"/>
-				
+		
+		<!-- This filter will kick in when an exception is thrown that client app
+		mail monkey does have leg1 code to kick in leg2, so this filter will do 
+		leg1 process automatically and avoides a get request to /oauth/authorize manually
+		 and this will also make redirect uri to be redundent as it will redirect to the same
+		 page where client is in-->
+		<custom-filter ref="leg1Filter" after="EXCEPTION_TRANSLATION_FILTER"/>		
 		<csrf/>
 	</http>
 	
+	<!-- This will avoid a get request to the /oauth/authorize request -->
+	<oauth2:client id="leg1Filter"/>
 	
+	<!-- This will make /oauth/token post request automatically-->
 	<oauth2:resource id="crmResource" client-id="mailmonkey"
 					 					client-secret="somesecretkey"
 					 					type="authorization_code"
 					 					user-authorization-uri="http://localhost:8080/crm/oauth/authorize"
 					 					access-token-uri="http://localhost:8080/crm/oauth/token"
-					 					pre-established-redirect-uri="http://localhost:8080/mailmonkey/import.html"
+					 					scope="read"
 					 					/>
 					 
 	<oauth2:rest-template id="oauthTemplate" resource="crmResource"></oauth2:rest-template>				 

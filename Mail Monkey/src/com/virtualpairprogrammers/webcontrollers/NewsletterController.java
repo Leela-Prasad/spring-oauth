@@ -33,7 +33,7 @@ public class NewsletterController
 		return new ModelAndView("/newsletter.jsp");
 	}
 	
-	@RequestMapping("/import.html")
+	@RequestMapping("/importUpdated.html")
 	public ModelAndView secondVersion() {
 		CustomerCollectionRepresentation customers = oauthTemplate.getForObject("http://localhost:8080/crm/rest/customers", CustomerCollectionRepresentation.class);
 		return new ModelAndView("/importedContacts.jsp","customers",customers.getCustomers());
