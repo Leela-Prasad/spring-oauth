@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +24,9 @@ import com.virtualpairprogrammers.rest.representations.CustomerCollectionReprese
 @Controller
 public class NewsletterController 
 {	
+	@Autowired
+	private OAuth2RestTemplate oauthTemplate;
+	
 	@RequestMapping("/build-newsletter")
 	public ModelAndView displayAllCustomersOnWebPage()
 	{
@@ -29,6 +34,12 @@ public class NewsletterController
 	}
 	
 	@RequestMapping("/import.html")
+	public ModelAndView secondVersion() {
+		CustomerCollectionRepresentation customers = oauthTemplate.getForObject("http://localhost:8080/crm/rest/customers", CustomerCollectionRepresentation.class);
+		return new ModelAndView("/importedContacts.jsp","customers",customers.getCustomers());
+	}
+	
+	//@RequestMapping("/import.html")
 	public ModelAndView firstVersion(@RequestParam String code) throws JsonParseException, JsonMappingException, IOException {
 		RestTemplate template = new RestTemplate();
 		

@@ -37,4 +37,15 @@
 				
 		<csrf/>
 	</http>
+	
+	
+	<oauth2:resource id="crmResource" client-id="mailmonkey"
+					 					client-secret="somesecretkey"
+					 					type="authorization_code"
+					 					user-authorization-uri="http://localhost:8080/crm/oauth/authorize"
+					 					access-token-uri="http://localhost:8080/crm/oauth/token"
+					 					pre-established-redirect-uri="http://localhost:8080/mailmonkey/import.html"
+					 					/>
+					 
+	<oauth2:rest-template id="oauthTemplate" resource="crmResource"></oauth2:rest-template>				 
 </beans:beans>	
