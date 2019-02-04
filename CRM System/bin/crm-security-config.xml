@@ -33,7 +33,7 @@
  		<oauth2:client client-id="mailmonkey"
  						secret="somesecretkey"
  						authorities="ROLE_CLIENT"
- 						scope="read"
+ 						scope="read,write"
  						authorized-grant-types="authorization_code"/>
  	</oauth2:client-details-service>
  	
@@ -85,7 +85,8 @@
 		<!--  Here the access must be one who have oauth access token so the we have 
 			validate based on the scope, here we have used spring expression language
 			#oauth2, inorder to enable this SEL we have wire another bean called expression handler-->
-		<intercept-url pattern="/rest/customers" access="#oauth2.hasScope('read')"/>
+		<intercept-url pattern="/rest/customers" method="POST" access="#oauth2.hasScope('write')"/>
+		<intercept-url pattern="/rest/customers" access="#oauth2.hasScope('read') or #oauth2.hasScope('write')"/>
 		
 		<!-- By default oauth filter is not added in the default filter chain so we need to add this manually
 		     by referencing resource-server where existing tokens are avialable and this filter must be added

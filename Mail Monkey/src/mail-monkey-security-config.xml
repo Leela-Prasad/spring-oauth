@@ -53,7 +53,7 @@
 					 					type="authorization_code"
 					 					user-authorization-uri="http://localhost:8080/crm/oauth/authorize"
 					 					access-token-uri="http://localhost:8080/crm/oauth/token"
-					 					scope="read"
+					 					scope="read,write"
 					 					/>
 					 
 	<oauth2:rest-template id="oauthTemplate" resource="crmResource"></oauth2:rest-template>				 
