@@ -16,7 +16,7 @@
          i.e., /oauth/authorize  and  /oauth/token 
          we can even override these defaults by defining spring controller
          in that case we don't need this block-->
-    <oauth2:authorization-server client-details-service-ref="clientDetailsService">
+    <oauth2:authorization-server client-details-service-ref="clientDetailsService" user-approval-handler-ref="userApprovalHandler">
     	<!-- This is to tell that we are doing Oauth full Authentication Grant type -->
     	<oauth2:authorization-code/>
     </oauth2:authorization-server>  
@@ -98,6 +98,7 @@
 		    in token authentication entry point, unfortunately we dont have any tag to plug in but we can write a bean 
 		    to this-->
 		<!-- <http-basic /> -->
+		<csrf disabled="true"/>
 	</http>
 	
 	<!-- This is to intercept oauth token endpoint -->
@@ -129,4 +130,7 @@
 		<csrf/> 		
 	</http>
 	
+	<!-- This block is used to handle user approval in Oauth Authorization page-->
+	<beans:bean id="approvalStore" class="org.springframework.security.oauth2.provider.approval.InMemoryApprovalStore" />
+	<beans:bean id="userApprovalHandler" class="org.springframework.security.oauth2.provider.approval.ApprovalStoreUserApprovalHandler" autowire="byType" /> 
 </beans:beans>	
