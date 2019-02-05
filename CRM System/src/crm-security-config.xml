@@ -19,6 +19,7 @@
     <oauth2:authorization-server client-details-service-ref="clientDetailsService" user-approval-handler-ref="userApprovalHandler">
     	<!-- This is to tell that we are doing Oauth full Authentication Grant type -->
     	<oauth2:authorization-code/>
+    	<oauth2:client-credentials/>
     </oauth2:authorization-server>  
  	
  	<!-- This block is responsible for storing list of registered clients
@@ -35,6 +36,13 @@
  						authorities="ROLE_CLIENT"
  						scope="read,write"
  						authorized-grant-types="authorization_code"/>
+ 						
+ 		<oauth2:client client-id="trusted"
+ 						secret="trustedsecret"
+ 						authorities="ROLE_TRUSTED"
+ 						scope="trusted"
+ 						authorized-grant-types="client_credentials"
+ 						/>				
  	</oauth2:client-details-service>
  	
  	
@@ -85,8 +93,8 @@
 		<!--  Here the access must be one who have oauth access token so the we have 
 			validate based on the scope, here we have used spring expression language
 			#oauth2, inorder to enable this SEL we have wire another bean called expression handler-->
-		<intercept-url pattern="/rest/customers" method="POST" access="#oauth2.hasScope('write')"/>
-		<intercept-url pattern="/rest/customers" access="#oauth2.hasScope('read') or #oauth2.hasScope('write')"/>
+		<intercept-url pattern="/rest/customers" method="POST" access="#oauth2.hasScope('write') or #oauth2.hasScope('trusted')"/>
+		<intercept-url pattern="/rest/customers" access="#oauth2.hasScope('read') or #oauth2.hasScope('write') or #oauth2.hasScope('trusted')"/>
 		
 		<!-- By default oauth filter is not added in the default filter chain so we need to add this manually
 		     by referencing resource-server where existing tokens are avialable and this filter must be added
@@ -104,7 +112,7 @@
 	
 	<!-- This is to intercept oauth token endpoint -->
 	<http pattern="/oauth/token" create-session="stateless" authentication-manager-ref="oauthTokenEndpointAuthManager">
-		<intercept-url pattern="/oauth/token" access="hasRole('ROLE_CLIENT')" />
+		<intercept-url pattern="/oauth/token" access="hasRole('ROLE_CLIENT') or hasRole('ROLE_TRUSTED')" />
 		<http-basic/>
 		
 		<!-- oauth is not working if we don't disable csrf, which is ok
