@@ -22,12 +22,12 @@
 	</authentication-manager>
 	
 	<http pattern="/**">	
-		<intercept-url pattern="/login.jsp" access="permitAll()"/>
-		<intercept-url pattern="/css/**" access="permitAll()"/>		
-		<intercept-url pattern="/images/**" access="permitAll()"/>		
+		<intercept-url pattern="/login.jsp" access="permitAll()" requires-channel="https"/>
+		<intercept-url pattern="/css/**" access="permitAll()" requires-channel="https"/>		
+		<intercept-url pattern="/images/**" access="permitAll()" requires-channel="https"/>		
 		
-		<intercept-url pattern="/login" access="permitAll()"/>
-		<intercept-url pattern="/**" access="hasRole('ROLE_MAIL_USER')"/>
+		<intercept-url pattern="/login" access="permitAll()" requires-channel="https"/>
+		<intercept-url pattern="/**" access="hasRole('ROLE_MAIL_USER')" requires-channel="https"/>
 		
 		<form-login login-page="/login.jsp"
 					authentication-failure-url="/login.jsp?error=1"
@@ -42,6 +42,11 @@
 		 page where client is in-->
 		<custom-filter ref="leg1Filter" after="EXCEPTION_TRANSLATION_FILTER"/>		
 		<csrf/>
+		
+		<!-- This port mapping is needed when you are not redirecting to standard ports i.e., http(8080), https(8443) -->
+		<port-mappings>
+			<port-mapping http="8180" https="8543"/>
+		</port-mappings>
 	</http>
 	
 	<!-- This will avoid a get request to the /oauth/authorize request -->
@@ -51,8 +56,8 @@
 	<oauth2:resource id="crmResource" client-id="mailmonkey"
 					 					client-secret="somesecretkey"
 					 					type="authorization_code"
-					 					user-authorization-uri="http://localhost:8080/crm/oauth/authorize"
-					 					access-token-uri="http://localhost:8080/crm/oauth/token"
+					 					user-authorization-uri="https://localhost:8443/crm/oauth/authorize"
+					 					access-token-uri="https://localhost:8443/crm/oauth/token"
 					 					scope="read,write"
 					 					/>
 					 

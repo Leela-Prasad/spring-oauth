@@ -22,47 +22,19 @@ public class RestClient
 {
 	public static void main(String[] args) throws IOException
 	{
-		/*RestTemplate template = new RestTemplate();
 		
-		String credentials = "trusted:trustedsecret";
-		String encodedCredentials = Base64.encodeBase64String(credentials.getBytes());
-		
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", "Basic " + encodedCredentials);
-		
-		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-		params.add("grant_type", "client_credentials");
-		
-		HttpEntity entity = new HttpEntity<>(params,headers);
-		String url ="http://localhost:8080/crm/oauth/token";
-		
-		
-		ResponseEntity<String> response = template.exchange(url, HttpMethod.POST, entity, String.class);
-
-		System.out.println(response.getBody());
-		
-		ObjectMapper mapper = new ObjectMapper();
-		Map<String,String> oauthTokenMap = mapper.readValue(response.getBody(), Map.class);
-		String oauthToken = oauthTokenMap.get("access_token");
-		
-		HttpHeaders headersleg3 = new HttpHeaders();
-		headersleg3.add("Authorization", "Bearer " + oauthToken);
-		
-		HttpEntity entityleg3 = new HttpEntity<>(headersleg3);
-		
-		String urlleg3 = "http://localhost:8080/crm/rest/customers";
-		ResponseEntity<CustomerCollectionRepresentation> customers = template.exchange(urlleg3, HttpMethod.GET, entityleg3, CustomerCollectionRepresentation.class);
-		System.out.println(customers.getBody());*/
-		
-		
+		// This property is used to tell java virtual machine to trust the certificate.
+		// This is only required if the certificate is self signed, if it is signed by CA
+		// then rest endpoint will automatically invoke
+		System.setProperty("javax.net.ssl.trustStore", "./client.keystore");
 		ClientCredentialsResourceDetails resource = new ClientCredentialsResourceDetails();
 		resource.setClientId("trusted");
 		resource.setClientSecret("trustedsecret");
 		resource.setGrantType("client_credentials");
-		resource.setAccessTokenUri("http://localhost:8080/crm/oauth/token");
+		resource.setAccessTokenUri("https://localhost:8443/crm/oauth/token");
 		OAuth2RestTemplate oauthTemplate = new OAuth2RestTemplate(resource);
 		
-		CustomerCollectionRepresentation customers = oauthTemplate.getForObject("http://localhost:8080/crm/rest/customers", CustomerCollectionRepresentation.class);
+		CustomerCollectionRepresentation customers = oauthTemplate.getForObject("https://localhost:8443/crm/rest/customers", CustomerCollectionRepresentation.class);
 		System.out.println(customers);
 		
 	}

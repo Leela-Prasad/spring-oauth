@@ -41,7 +41,7 @@ public class NewsletterController
 	
 	@RequestMapping("/importFromCRM.html")
 	public ModelAndView secondVersion() {
-		CustomerCollectionRepresentation customers = oauthTemplate.getForObject("http://localhost:8080/crm/rest/customers", CustomerCollectionRepresentation.class);
+		CustomerCollectionRepresentation customers = oauthTemplate.getForObject("https://localhost:8443/crm/rest/customers", CustomerCollectionRepresentation.class);
 		return new ModelAndView("/importedContacts.jsp","customers",customers.getCustomers());
 	}
 	
@@ -64,7 +64,7 @@ public class NewsletterController
 		{
 			return new ModelAndView("/exportForm.jsp", "customer", customer);
 		}
-		String url = "http://localhost:8080/crm/rest/customers";
+		String url = "https://localhost:8443/crm/rest/customers";
 		
 		// call the external CRM system and then redirect to show all contacts page.
 		oauthTemplate.postForLocation(url, customer);
@@ -88,9 +88,9 @@ public class NewsletterController
 		//It is recommended to pass authorization code which unlocks
 		//leg2 in headers instead of headers so when the ssl url 
 		//decrypts at server side it will not be visible in the url.
-		String url ="http://localhost:8080/crm/oauth/token"
+		String url ="https://localhost:8443/crm/oauth/token"
 				    + "?code=" + code
-				    +"&redirect_uri=http://localhost:8080/mailmonkey/import.html"  //not sure why we need to give redirect uri
+				    +"&redirect_uri=https://localhost:8543/mailmonkey/import.html"  //not sure why we need to give redirect uri
 				    +"&grant_type=authorization_code";
 		
 		ResponseEntity<String> response = template.exchange(url, HttpMethod.POST, entity, String.class);
@@ -104,7 +104,7 @@ public class NewsletterController
 		// It is always recommended to pass access_token in headers so that 
 		// it will not be visible in the url when ssl url decrypts at service side
 		// so that hacker will not see the access_token
-		/*String urlleg3 = "http://localhost:8080/crm/rest/customers"
+		/*String urlleg3 = "https://localhost:8443/crm/rest/customers"
 				         + "?access_token=" + oauthToken;
 
 		CustomerCollectionRepresentation customers = template.getForObject(urlleg3, CustomerCollectionRepresentation.class);
@@ -115,7 +115,7 @@ public class NewsletterController
 		
 		HttpEntity entityleg3 = new HttpEntity<>(headersleg3);
 		
-		String urlleg3 = "http://localhost:8080/crm/rest/customers";
+		String urlleg3 = "https://localhost:8443/crm/rest/customers";
 		ResponseEntity<CustomerCollectionRepresentation> customers = template.exchange(urlleg3, HttpMethod.GET, entityleg3, CustomerCollectionRepresentation.class);
 		
 		return new ModelAndView("/importedContacts.jsp","customers",customers.getBody().getCustomers());

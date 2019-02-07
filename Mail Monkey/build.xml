@@ -8,7 +8,7 @@
     <property name="warfile" value="${dist}/mailmonkey.war"/>
     <property name="html" value="./web"/>
 	
-    <property name="tomcat.webapps.dir" value="../tomcat/webapps"/>	     
+    <property name="tomcat.webapps.dir" value="./tomcat/webapps"/>	     
      
     <path id="my.classpath">
         <pathelement path="${java.class.path}"/>
