@@ -6,9 +6,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
+import org.springframework.stereotype.Component;
+
 import com.virtualpairprogrammers.domain.Call;
 import com.virtualpairprogrammers.domain.Customer;
 
+@Component
 public class CustomerDaoJpaImpl implements CustomerDao {
 
 	@PersistenceContext

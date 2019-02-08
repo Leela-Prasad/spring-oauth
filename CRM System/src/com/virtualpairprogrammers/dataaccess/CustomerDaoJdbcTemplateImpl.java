@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 import com.virtualpairprogrammers.domain.Call;
 import com.virtualpairprogrammers.domain.Customer;
 
-@Repository
+//@Repository
 public class CustomerDaoJdbcTemplateImpl implements CustomerDao {
 
 	private static final String INSERT_CALL_SQL = "INSERT INTO TBL_CALL(NOTES, TIME_AND_DATE, CUSTOMER_ID) VALUES (?, ?, ?)";
